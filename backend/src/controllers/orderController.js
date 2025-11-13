@@ -337,3 +337,64 @@ exports.sendReviewReminder = async (req, res, next) => {
   }
 };
 
+// ================== UPDATE STATUS ==================
+exports.updateStatus = async (req, res, next) => {
+  try {
+    const id = req.params.id;
+    const { status } = req.body;
+
+    if (!status) {
+      return res.status(400).json({
+        status: "fail",
+        message: "Trạng thái không được để trống",
+      });
+    }
+
+    const validStatuses = [
+      "processing",
+      "pending",
+      "confirmed",
+      "shipping",
+      "delivered",
+      "canceled_by_customer",
+      "canceled_by_shop",
+      "refund_pending",
+      "refund_completed",
+    ];
+
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({
+        status: "fail",
+        message: `Trạng thái không hợp lệ. Các trạng thái hợp lệ: ${validStatuses.join(", ")}`,
+      });
+    }
+
+    const ord = await Order.findOne({
+      $or: [{ _id: id }, { order_code: id }],
+    });
+
+    if (!ord) {
+      return res
+        .status(404)
+        .json({ status: "fail", message: "Không tìm thấy đơn hàng" });
+    }
+
+    const oldStatus = ord.status;
+    ord.status = status;
+    await ord.save();
+
+    res.json({
+      status: "success",
+      data: {
+        order_id: ord._id,
+        order_code: ord.order_code,
+        old_status: oldStatus,
+        new_status: ord.status,
+        status_text: STATUS_MAP[ord.status] || ord.status,
+      },
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+

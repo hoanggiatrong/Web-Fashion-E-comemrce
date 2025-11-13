@@ -1,0 +1,422 @@
+{
+	"info": {
+		"_postman_id": "order-api-collection",
+		"name": "Order API",
+		"description": "Collection cho Order API endpoints",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "User Orders",
+			"item": [
+				{
+					"name": "List Orders",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/orders?status=pending&page=1&limit=10&q=",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"orders"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "pending",
+									"description": "pending, confirmed, processing, shipping, delivered, canceled, refund_pending, refund_completed, review"
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Số trang"
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Số lượng mỗi trang"
+								},
+								{
+									"key": "q",
+									"value": "",
+									"description": "Tìm kiếm theo order_code"
+								}
+							]
+						},
+						"description": "Lấy danh sách đơn hàng của user"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Order Detail",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/orders/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"orders",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "order_id_or_order_code",
+									"description": "ID hoặc order_code của đơn hàng"
+								}
+							]
+						},
+						"description": "Lấy chi tiết đơn hàng theo ID hoặc order_code"
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Order",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/orders/:id/cancel",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"orders",
+								":id",
+								"cancel"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "order_id_or_order_code",
+									"description": "ID hoặc order_code của đơn hàng"
+								}
+							]
+						},
+						"description": "Hủy đơn hàng (chỉ được hủy khi status không phải shipping hoặc delivered)"
+					},
+					"response": []
+				},
+				{
+					"name": "Reorder",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/orders/:id/reorder",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"orders",
+								":id",
+								"reorder"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "order_id_or_order_code",
+									"description": "ID hoặc order_code của đơn hàng"
+								}
+							]
+						},
+						"description": "Đặt lại đơn hàng (thêm items vào cart)"
+					},
+					"response": []
+				},
+				{
+					"name": "Request Refund",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"reason\": \"Sản phẩm bị lỗi\",\n  \"items\": [],\n  \"images\": []\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/orders/:id/refund",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"orders",
+								":id",
+								"refund"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "order_id_or_order_code",
+									"description": "ID hoặc order_code của đơn hàng"
+								}
+							]
+						},
+						"description": "Yêu cầu hoàn tiền/đổi trả (chỉ được yêu cầu khi status = delivered và trong vòng 3 ngày)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Tracking",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/orders/:id/tracking",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"orders",
+								":id",
+								"tracking"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "order_id_or_order_code",
+									"description": "ID hoặc order_code của đơn hàng"
+								}
+							]
+						},
+						"description": "Lấy thông tin tracking đơn hàng"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Invoice PDF",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/orders/:id/invoice",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"orders",
+								":id",
+								"invoice"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "order_id_or_order_code",
+									"description": "ID hoặc order_code của đơn hàng"
+								}
+							]
+						},
+						"description": "Lấy link PDF hóa đơn"
+					},
+					"response": []
+				},
+				{
+					"name": "Send Review Reminder",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/orders/:id/review-reminder",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"orders",
+								":id",
+								"review-reminder"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "order_id_or_order_code",
+									"description": "ID hoặc order_code của đơn hàng"
+								}
+							]
+						},
+						"description": "Gửi email/push notification nhắc đánh giá đơn hàng (chỉ khi status = delivered)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Order Status",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"confirmed\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/orders/:id/status",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"orders",
+								":id",
+								"status"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "order_id_or_order_code",
+									"description": "ID hoặc order_code của đơn hàng"
+								}
+							]
+						},
+						"description": "Cập nhật trạng thái đơn hàng. Các trạng thái hợp lệ: processing, pending, confirmed, shipping, delivered, canceled_by_customer, canceled_by_shop, refund_pending, refund_completed"
+					},
+					"response": []
+				}
+			],
+			"description": "Các API cho user quản lý đơn hàng"
+		},
+		{
+			"name": "Shop Orders",
+			"item": [
+				{
+					"name": "Get Revenue By Category",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/orders/revenue-by-category",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"orders",
+								"revenue-by-category"
+							]
+						},
+						"description": "Lấy doanh thu theo danh mục (dành cho shop)"
+					},
+					"response": []
+				}
+			],
+			"description": "Các API cho shop quản lý đơn hàng"
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:5000",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
+

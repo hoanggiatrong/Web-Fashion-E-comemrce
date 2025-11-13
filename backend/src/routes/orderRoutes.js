@@ -25,4 +25,6 @@ router.get("/:id/tracking", ctrl.tracking);
 router.get("/:id/invoice", ctrl.invoicePdf);
 router.post("/:id/review-reminder", ctrl.sendReviewReminder);
 
+router.put("/:id/status", ctrl.updateStatus);
+
 module.exports = router;
